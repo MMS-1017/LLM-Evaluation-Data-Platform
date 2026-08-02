@@ -1,0 +1,44 @@
+pipeline:
+  name: "llm-eval-platform"
+  version: "0.1.0"
+  description: "End-to-end LLM evaluation data pipeline"
+
+paths:
+  raw: "data/raw"
+  bronze: "data/bronze"
+  silver: "data/silver"
+  gold: "data/gold"
+  logs: "logs"
+
+ingestion:
+  supported_extensions:
+    - ".txt"
+    - ".md"
+    - ".json"
+    - ".pdf"
+    - ".csv"
+  batch_size: 100
+  encoding: "utf-8"
+
+chunking:
+  chunk_size: 512
+  chunk_overlap: 64
+  min_chunk_length: 50
+  strategy: "sliding_window"  # options: sliding_window, sentence, paragraph
+
+quality_filter:
+  min_quality_score: 0.30
+  min_token_count: 20
+  max_token_count: 2048
+
+bronze:
+  format: "parquet"
+  partition_by: []
+
+silver:
+  format: "parquet"
+  dedup_key: "doc_id"
+
+gold:
+  format: "parquet"
+  sort_by: ["doc_id", "chunk_id"]

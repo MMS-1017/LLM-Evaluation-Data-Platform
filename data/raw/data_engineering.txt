@@ -1,0 +1,53 @@
+Data engineering is the practice of designing, building, and maintaining the infrastructure
+and systems that collect, store, process, and serve data at scale. Data engineers create the
+pipelines and platforms that power analytics, machine learning, and business intelligence.
+The role sits at the intersection of software engineering and data science.
+
+The Medallion Architecture (also called Bronze-Silver-Gold or multi-hop architecture) is a
+layered data design pattern popularized by Databricks. It organizes data into progressively
+refined layers, each serving a distinct purpose in the data lifecycle.
+
+The Bronze layer is the raw ingestion layer. Data arrives here in its original format with
+minimal transformation. The primary goals are high throughput, schema-on-read flexibility,
+and complete data lineage. Files are often stored in Parquet or Delta Lake format. The bronze
+layer serves as the source of truth for reprocessing and auditing.
+
+The Silver layer applies cleaning, deduplication, standardization, and light transformations
+to bronze data. Schema is enforced here. Quality checks are applied to filter out corrupt
+or malformed records. The silver layer represents "trusted" data that downstream teams
+can safely consume. PySpark is commonly used for silver-layer transformations due to its
+distributed processing capability.
+
+The Gold layer contains business-ready, aggregated, or purpose-built datasets. Data at
+this layer is optimized for specific use cases: analytics dashboards, feature stores for
+machine learning, or serving as input to embedding pipelines. Gold data is typically smaller,
+faster to query, and has the highest quality guarantees.
+
+Apache Spark is the dominant distributed data processing framework. PySpark provides a
+Python API for Spark, enabling data engineers to write transformations that scale from a
+single machine to hundreds of nodes. Key Spark concepts include RDDs (Resilient Distributed
+Datasets), DataFrames (SQL-like structured data), and Datasets (typed DataFrames in Scala/Java).
+Spark SQL allows expressing transformations declaratively. Spark Streaming enables processing
+of real-time data streams. Adaptive Query Execution (AQE) in Spark 3.x automatically
+optimizes query plans at runtime.
+
+Delta Lake is an open-source storage layer built on top of Parquet that brings ACID
+transactions, scalable metadata handling, and time travel to data lakes. Delta tables
+support schema evolution and enforcement, merge (upsert) operations, and audit logging
+via a transaction log. Delta Lake integrates seamlessly with PySpark and is central to
+the Databricks Lakehouse architecture.
+
+Apache Airflow is the de facto standard for orchestrating data pipelines. Pipelines are
+defined as Directed Acyclic Graphs (DAGs) in Python, where nodes represent tasks and
+edges define dependencies. Airflow provides a rich UI for monitoring DAG runs, re-running
+failed tasks, and managing pipeline schedules. CeleryExecutor and KubernetesExecutor
+allow scaling task execution across clusters.
+
+Data quality is a first-class concern in modern data engineering. Frameworks like Great
+Expectations and dbt Tests enable automated data validation as part of the pipeline.
+Profiling tools like ydata-profiling generate statistical summaries of datasets to
+detect anomalies, schema drift, and distribution shifts.
+
+The modern data stack typically consists of cloud data warehouses (Snowflake, BigQuery,
+Redshift), cloud object storage (S3, GCS, ADLS), orchestration tools (Airflow, Prefect,
+Dagster), transformation frameworks (dbt, Spark), and BI tools (Tableau, Looker, Power BI).

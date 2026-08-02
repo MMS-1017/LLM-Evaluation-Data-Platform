@@ -1,0 +1,55 @@
+MLOps (Machine Learning Operations) is the set of practices that combines machine learning,
+DevOps, and data engineering to automate and streamline the lifecycle of ML models from
+development to production. The discipline emerged from the recognition that deploying and
+maintaining ML systems in production is significantly more complex than traditional software.
+
+The ML lifecycle encompasses several phases: data collection and preparation, feature
+engineering, model training, evaluation, deployment, monitoring, and retraining. MLOps
+practices address each phase with automation, reproducibility, and observability.
+
+Experiment tracking is the foundation of reproducible ML research. Tools like MLflow,
+Weights & Biases, and Neptune allow practitioners to log hyperparameters, metrics,
+model artifacts, and code versions for every training run. This enables systematic
+comparison of experiments and reliable reproduction of results.
+
+MLflow is an open-source platform for the complete ML lifecycle. Its core components are:
+- MLflow Tracking: Logs parameters, metrics, and artifacts for each run.
+- MLflow Projects: Packages ML code in a reusable, reproducible format.
+- MLflow Models: Provides a standard format for packaging ML models for deployment.
+- MLflow Model Registry: A centralized store for managing model versions and stages.
+
+Feature stores centralize the computation, storage, and serving of ML features, ensuring
+consistency between training and inference. Feast, Tecton, and Hopsworks are popular
+open-source and commercial feature stores. Feature stores solve the training-serving skew
+problem where features computed differently offline and online lead to degraded model performance.
+
+Model serving refers to deploying a trained model as a service that receives prediction
+requests. REST APIs (FastAPI, Flask), gRPC services, and batch inference jobs are common
+serving patterns. Triton Inference Server and TorchServe are specialized high-performance
+serving frameworks. Considerations include latency requirements, throughput, hardware
+acceleration (GPU vs CPU), and model versioning.
+
+Continuous training (CT) is the practice of automatically retraining models when performance
+degrades or new data arrives. This contrasts with static ML pipelines that train once and
+deploy. CT pipelines are triggered by data drift alerts, scheduled retraining intervals,
+or performance threshold violations.
+
+Model monitoring tracks the behavior of deployed models over time. Key metrics include
+prediction distribution drift, feature drift, data quality scores, and business KPIs.
+Evidently AI and Arize AI are purpose-built monitoring platforms. When drift is detected,
+alerts trigger investigation and potential retraining.
+
+For LLM-based applications, evaluation frameworks like Ragas assess RAG pipeline quality
+using metrics such as faithfulness (answer supported by context), answer relevancy,
+context precision, and context recall. Regular evaluation runs, tracked in MLflow,
+enable teams to detect degradation in retrieval or generation quality.
+
+Infrastructure as Code (IaC) using Terraform or Pulumi manages the cloud resources
+required for ML pipelines — compute clusters, object storage, managed databases, and
+networking. Containerization with Docker and orchestration with Kubernetes enable
+portable, scalable ML workloads. Helm charts package Kubernetes deployments for reuse.
+
+The full CI/CD/CT loop for ML systems involves: code push → automated tests → model
+training → evaluation → staging deployment → canary release → production deployment →
+monitoring → alert → retraining. Each step is automated to minimize manual intervention
+and maximize the speed of delivering improvements to production.

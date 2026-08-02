@@ -1,0 +1,43 @@
+Artificial intelligence (AI) refers to the simulation of human intelligence processes by
+computer systems. These processes include learning, reasoning, problem-solving, perception,
+and language understanding. AI was founded as an academic discipline in 1956, making it
+one of the oldest fields in computer science.
+
+Modern AI systems are broadly categorized into narrow AI, which is designed to perform
+specific tasks, and artificial general intelligence (AGI), which remains a theoretical
+concept referring to a system that can perform any intellectual task that a human can.
+Current AI systems are exclusively narrow AI, despite impressive capabilities in
+image recognition, natural language processing, and game playing.
+
+Machine learning is the dominant paradigm in modern AI. Unlike traditional rule-based
+programming, machine learning systems learn from data by identifying patterns and making
+predictions. The field encompasses supervised learning, unsupervised learning, and
+reinforcement learning. Supervised learning involves training on labeled examples, where
+the model learns to map inputs to outputs. Unsupervised learning discovers hidden patterns
+in unlabeled data. Reinforcement learning trains agents through trial and error, rewarding
+desired behaviors and penalizing undesirable ones.
+
+Deep learning, a subset of machine learning, uses artificial neural networks with many
+layers to model complex patterns. Convolutional neural networks (CNNs) excel at image
+recognition. Recurrent neural networks (RNNs) and their variants, like LSTMs, handle
+sequential data such as time series and text. Transformers, introduced in the landmark
+paper "Attention Is All You Need" (2017), have become the dominant architecture for
+natural language processing and are the foundation of large language models like GPT and BERT.
+
+AI applications span virtually every industry. In healthcare, AI assists in medical
+image analysis, drug discovery, and personalized treatment planning. In finance, it powers
+algorithmic trading, fraud detection, and credit risk assessment. In transportation,
+self-driving vehicles rely on AI perception and decision-making systems. In education,
+adaptive learning platforms personalize instruction to individual students.
+
+The ethical implications of AI are significant. Concerns include algorithmic bias, where
+models trained on biased data perpetuate discrimination. Privacy risks arise from systems
+that process personal data at scale. The automation of jobs through AI raises socioeconomic
+concerns. Researchers and policymakers are increasingly focused on developing AI that is
+fair, transparent, accountable, and aligned with human values.
+
+Explainability is a growing research area: as AI models become more complex, understanding
+why they make specific decisions becomes critical, particularly in high-stakes domains like
+medicine and criminal justice. Techniques such as SHAP (SHapley Additive exPlanations)
+and LIME (Local Interpretable Model-agnostic Explanations) attempt to make black-box
+models more interpretable.

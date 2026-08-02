@@ -1,0 +1,24 @@
+spark:
+  app_name: "LLMEvalPlatform"
+  master: "local[*]"
+
+  memory:
+    executor: "2g"
+    driver: "2g"
+
+  sql:
+    shuffle_partitions: 8
+    adaptive_enabled: true
+    adaptive_coalesce_partitions: true
+
+  delta:
+    extensions:
+      - "io.delta.sql.DeltaSparkSessionExtension"
+    catalog: "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+
+  log_level: "WARN"
+
+  # For production cluster deployment, override master and memory
+  # master: "yarn"
+  # executor: "4g"
+  # driver: "4g"

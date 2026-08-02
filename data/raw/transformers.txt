@@ -1,0 +1,51 @@
+The Transformer architecture, introduced by Vaswani et al. in the 2017 paper "Attention
+Is All You Need," fundamentally changed the landscape of deep learning for natural language
+processing and beyond. Unlike recurrent neural networks that process sequences step by step,
+Transformers process entire sequences in parallel using a mechanism called self-attention.
+
+Self-attention allows the model to weigh the importance of each token in a sequence relative
+to every other token when computing a representation. For each position in the sequence, the
+model computes three vectors: a query, a key, and a value. The attention score between two
+positions is computed as the dot product of the query and key vectors, scaled by the square
+root of the dimension, and passed through a softmax function to produce attention weights.
+These weights are used to produce a weighted sum of the value vectors.
+
+Multi-head attention extends this concept by performing attention multiple times in parallel
+with different learned projections. Each "head" can focus on different aspects of the
+relationships between tokens. The outputs of all heads are concatenated and projected back
+to the model dimension, allowing the model to capture diverse types of relationships.
+
+The Transformer encoder consists of stacked layers, each containing a multi-head self-attention
+sub-layer and a position-wise feed-forward network sub-layer. Residual connections and layer
+normalization are applied around each sub-layer. The decoder, used in sequence-to-sequence
+tasks, adds a cross-attention layer that attends to the encoder output.
+
+Since Transformers have no inherent notion of sequence order (unlike RNNs), positional
+encodings are added to the input embeddings to inject position information. The original
+paper used sinusoidal positional encodings, but learned positional embeddings are also common.
+
+BERT (Bidirectional Encoder Representations from Transformers), introduced by Google in 2018,
+is an encoder-only Transformer trained on two tasks: masked language modeling (predicting
+randomly masked tokens) and next sentence prediction. BERT introduced the paradigm of
+pre-training on large corpora followed by fine-tuning on downstream tasks, achieving
+state-of-the-art results across many NLP benchmarks.
+
+GPT (Generative Pre-trained Transformer), developed by OpenAI, uses a decoder-only
+architecture trained with autoregressive language modeling: predicting the next token
+given all previous tokens. GPT-3 (2020) demonstrated that scaling model size and training
+data leads to emergent capabilities, including few-shot learning. GPT-4 further extended
+these capabilities with multimodal inputs.
+
+T5 (Text-to-Text Transfer Transformer) by Google frames all NLP tasks as a text-to-text
+problem, unifying classification, summarization, translation, and question answering under
+a single training objective. This encoder-decoder architecture has proven highly versatile.
+
+The computational cost of attention scales quadratically with sequence length, motivating
+research into efficient attention variants. Sparse attention (as in Longformer and BigBird)
+restricts attention to local windows and global tokens. Linear attention approximates
+softmax attention in O(n) complexity. Flash Attention is a hardware-aware exact attention
+algorithm that reduces memory bandwidth usage and enables longer context lengths.
+
+Vision Transformers (ViTs) adapt the Transformer architecture to computer vision by treating
+image patches as tokens. This approach matches or exceeds CNN performance on large datasets
+and has driven the convergence of vision and language models in multimodal systems.

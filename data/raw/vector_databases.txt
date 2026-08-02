@@ -1,0 +1,57 @@
+Vector databases are purpose-built database management systems designed to store, index,
+and query high-dimensional vector embeddings efficiently. They are foundational to modern
+AI applications that require semantic search, recommendation, and retrieval-augmented generation.
+
+A vector embedding is a dense numerical representation of an object — whether a text chunk,
+image, audio clip, or structured record — in a high-dimensional space where semantically
+similar objects are geometrically close. Embedding models such as sentence-transformers,
+CLIP, and OpenAI's embedding API produce these representations. The quality of the embedding
+model directly determines the quality of vector search results.
+
+The core operation in a vector database is nearest neighbor (NN) search: given a query
+vector, find the k vectors in the index that are most similar according to a distance
+metric. Common metrics include cosine similarity (measures the angle between vectors,
+standard for text embeddings), Euclidean distance (L2 norm, common for image embeddings),
+and dot product (maximizes inner product, used for unnormalized embeddings).
+
+Exact NN search (brute force) is O(n*d) in complexity, where n is the number of vectors
+and d is the dimensionality. This becomes prohibitively slow at scale. Approximate Nearest
+Neighbor (ANN) algorithms trade a small amount of recall for dramatically faster search.
+The most widely used ANN algorithms are:
+
+HNSW (Hierarchical Navigable Small World): A graph-based algorithm that constructs a
+multi-layer graph where each layer is a subgraph of the layer below. Search starts at
+the top layer and greedily navigates toward the query. HNSW offers excellent recall-speed
+tradeoffs and is the default algorithm in most production vector databases.
+
+IVF (Inverted File Index): Clusters vectors using k-means and builds an inverted index.
+At query time, only the nearest cluster centroids are searched. IVF is memory-efficient
+and scales well when combined with product quantization (IVF-PQ).
+
+LSH (Locality-Sensitive Hashing): Projects vectors into a lower-dimensional space using
+hash functions designed so that similar vectors hash to the same bucket with high probability.
+LSH is fast but typically less accurate than HNSW.
+
+Qdrant is an open-source vector database written in Rust, offering high performance and
+production-ready features including payload filtering, named vectors, sparse vectors,
+on-disk storage, and a REST/gRPC API. It supports HNSW indexing with cosine, dot, and
+Euclidean distance metrics. Qdrant can be deployed as a Docker container or via Qdrant Cloud.
+
+Pinecone is a managed vector database-as-a-service with a focus on simplicity and
+scalability. It handles infrastructure automatically and supports filtering on metadata fields.
+
+Weaviate is an open-source vector database that integrates tightly with ML models through
+its "modules" system, enabling automatic vectorization and hybrid search (combining keyword
+and vector search).
+
+Chroma is a lightweight, developer-friendly vector database designed for local development
+and prototyping. It runs in-process and requires no external services.
+
+Faiss (Facebook AI Similarity Search) is an open-source library (not a database) for
+efficient ANN search, often used as the underlying engine in other systems. It supports
+GPU acceleration and is highly optimized for large-scale batch retrieval.
+
+Key considerations when selecting a vector database for production include: scalability
+requirements, query latency SLAs, support for metadata filtering, persistence and backup
+mechanisms, multi-tenancy support, and operational complexity. For most RAG applications,
+Qdrant is an excellent open-source choice with a rich feature set and active development.

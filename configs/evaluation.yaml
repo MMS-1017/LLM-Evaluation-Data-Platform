@@ -1,0 +1,22 @@
+evaluation:
+  test_set_size: 20
+  random_seed: 42
+  metrics:
+    - faithfulness
+    - answer_relevancy
+    - context_precision
+    - context_recall
+  timeout_seconds: 120
+  max_retries: 3
+
+mlflow:
+  experiment_name: "llm_eval_platform"
+  tracking_uri: "http://localhost:5000"
+  run_name_prefix: "rag_eval"
+  log_artifacts: true
+
+ragas:
+  # Set to true to use actual Ragas library (requires LLM API access)
+  # Set to false to use heuristic-only scoring
+  use_llm_metrics: false
+  batch_size: 10

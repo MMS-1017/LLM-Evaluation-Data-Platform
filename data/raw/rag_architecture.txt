@@ -1,0 +1,52 @@
+Retrieval-Augmented Generation (RAG) is a framework that combines the parametric knowledge
+stored in large language model (LLM) weights with non-parametric external knowledge retrieved
+from a document corpus. The foundational RAG paper was published by Lewis et al. at Facebook
+AI Research in 2020, and the approach has since become the dominant paradigm for building
+knowledge-intensive NLP applications.
+
+The core intuition behind RAG is straightforward: instead of relying solely on knowledge
+encoded during pre-training — which can be outdated, incomplete, or hallucinated — the model
+retrieves relevant documents at inference time and uses them as context for generation.
+This enables LLMs to answer questions about current events, private enterprise data, or
+specialized domains without expensive retraining or fine-tuning.
+
+A standard RAG pipeline consists of two main phases: retrieval and generation.
+
+In the retrieval phase, the user's query is encoded into a dense vector representation
+using an embedding model (e.g., sentence-transformers, OpenAI text-embedding). This
+query vector is compared against a precomputed index of document chunk embeddings using
+approximate nearest neighbor (ANN) search. Vector databases such as Qdrant, Pinecone,
+Weaviate, and Faiss are purpose-built for this task, enabling sub-millisecond retrieval
+across millions of vectors.
+
+Document chunking is a critical preprocessing step that directly affects retrieval quality.
+Strategies include fixed-size character/token chunks with overlap, sentence-based chunking,
+paragraph-based chunking, and hierarchical (parent-child) chunking. Chunk size involves a
+tradeoff: larger chunks preserve more context but reduce retrieval precision; smaller chunks
+improve precision but may lack sufficient context for generation.
+
+In the generation phase, the top-k retrieved chunks are concatenated with the original
+query into a prompt, which is passed to the LLM. The model generates a response grounded
+in the retrieved context. The prompt template typically instructs the model to answer only
+based on the provided context and to indicate when information is unavailable.
+
+RAG evaluation is conducted using frameworks such as Ragas (Retrieval Augmented Generation
+Assessment). Key metrics include:
+
+- Faithfulness: Measures whether the generated answer is supported by the retrieved contexts.
+  A high faithfulness score indicates the model does not hallucinate.
+- Answer Relevancy: Measures how pertinent the generated answer is to the query.
+- Context Precision: Measures the fraction of retrieved chunks that are actually relevant.
+- Context Recall: Measures whether all relevant information was retrieved.
+
+Advanced RAG techniques address limitations of naive RAG. Query decomposition breaks complex
+questions into simpler sub-queries. HyDE (Hypothetical Document Embeddings) generates a
+hypothetical answer to a query and uses it as the retrieval query, improving recall.
+Re-ranking uses a cross-encoder to re-score and filter retrieved chunks before generation.
+Iterative RAG (FLARE) generates answers incrementally, triggering additional retrieval
+when the model's confidence drops below a threshold.
+
+RAG systems require careful consideration of embedding model choice, chunk overlap strategy,
+vector database selection, context window management, and evaluation methodology. Production
+RAG pipelines typically include logging and monitoring to track retrieval quality, latency,
+and answer quality over time, enabling continuous improvement.

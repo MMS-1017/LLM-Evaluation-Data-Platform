@@ -1,0 +1,26 @@
+FROM bitnami/spark:3.5
+
+USER root
+
+# Install Python dependencies for Spark workers
+RUN pip install --no-cache-dir \
+    pyspark==3.5.1 \
+    delta-spark==3.1.0 \
+    pyarrow>=14.0.0 \
+    pandas>=2.0.0 \
+    pydantic>=2.7.0 \
+    pydantic-settings>=2.3.0 \
+    python-dotenv>=1.0.0 \
+    pyyaml>=6.0.1 \
+    loguru>=0.7.2
+
+WORKDIR /app
+
+COPY src/ ./src/
+COPY pipelines/ ./pipelines/
+COPY configs/ ./configs/
+
+# Set PYTHONPATH so src/ and pipelines/ are importable
+ENV PYTHONPATH=/app
+
+USER 1001
