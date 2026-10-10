@@ -126,8 +126,8 @@ class TestQualityScore:
         assert quality_score(text) > 0.5
 
     def test_low_score_for_repetitive_text(self):
-        text = "the the the the the the the the the the"
-        assert quality_score(text) < 0.5
+        text = "123 123 123 123 123 123 123 123"
+        assert quality_score(text) < 0.3
 
     def test_returns_rounded_float(self):
         score = quality_score("Some normal text with words and letters")

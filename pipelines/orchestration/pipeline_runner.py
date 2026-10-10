@@ -50,7 +50,8 @@ def main(args: argparse.Namespace) -> int:
 
     if not args.skip_ingest:
         from pipelines.ingestion.run_ingestion import run as ingest
-        if not run_stage("Ingestion (Raw → Bronze)", ingest):
+        _ingest = lambda: ingest(force=args.force_ingest)
+        if not run_stage("Ingestion (Raw → Bronze)", _ingest):
             failures.append("Ingestion")
             if args.fail_fast:
                 return 1
@@ -99,6 +100,12 @@ if __name__ == "__main__":
                         help="Abort on first stage failure (default: True)")
     parser.add_argument("--only-eval", action="store_true",
                         help="Shortcut: run only the evaluation stage")
+    parser.add_argument(
+        "--force-ingest",
+        action="store_true",
+        default=False,
+        help="Reset ingestion state and re-ingest all raw files (ignores incremental tracking)",
+    )
     args = parser.parse_args()
 
     if args.only_eval:

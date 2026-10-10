@@ -127,8 +127,10 @@ LLM-Evaluation-Data-Platform/
 │   ├── Dockerfile.api                # FastAPI RAG service image
 │   ├── Dockerfile.spark              # Spark worker image
 │   └── Dockerfile.airflow            # Airflow scheduler/worker image
+├── notebooks/
+│   └── pipeline_monitoring.ipynb     # Layer-by-layer EDA & metrics dashboard
 ├── pipelines/
-│   ├── ingestion/                    # Raw → Bronze (loaders + writer)
+│   ├── ingestion/                    # Raw → Bronze (loaders + writer + state tracker)
 │   ├── spark/                        # Bronze → Silver → Gold jobs + session factory
 │   ├── embeddings/                   # Embedding service + Qdrant indexer
 │   ├── evaluation/                   # Test-set generation, Ragas, MLflow tracking
@@ -142,6 +144,9 @@ LLM-Evaluation-Data-Platform/
 │   ├── config/                       # Pydantic settings
 │   ├── models/                       # Domain models (documents, evaluation)
 │   └── utils/                        # File & text helpers
+├── tests/
+│   ├── unit/                         # 100+ fast, dependency-free unit tests
+│   └── integration/                  # End-to-end tests (no Spark/Qdrant needed)
 ├── .env.example                      # Copy to .env and edit
 ├── pyproject.toml                    # Package, dependencies, tooling config
 └── plan.md                           # Original design notes
@@ -261,12 +266,14 @@ The pipeline runner accepts flags to run a subset of stages — handy during dev
 ```bash
 python -m pipelines.orchestration.pipeline_runner --skip-spark   # reuse existing Silver/Gold
 python -m pipelines.orchestration.pipeline_runner --only-eval    # evaluation only
+python -m pipelines.orchestration.pipeline_runner --force-ingest # re-ingest all raw files
 ```
 
 Each stage can also be run on its own:
 
 ```bash
-python -m pipelines.ingestion.run_ingestion       # Raw     → Bronze
+python -m pipelines.ingestion.run_ingestion       # Raw     → Bronze (incremental)
+python -m pipelines.ingestion.run_ingestion --force  # force full re-ingest
 python -m pipelines.spark.bronze_to_silver         # Bronze  → Silver
 python -m pipelines.spark.silver_to_gold           # Silver  → Gold
 python -m pipelines.embeddings.run_embeddings      # Gold    → Qdrant
@@ -280,13 +287,19 @@ python -m pipelines.evaluation.run_evaluation      # Gold    → Ragas → MLflo
 The platform implements a classic **Medallion architecture**. Each arrow below is a stage you can
 run independently; each box is an immutable Parquet dataset under `data/`.
 
-### 1. Ingestion — Raw → Bronze
+### 1. Ingestion — Raw → Bronze (incremental)
 
 `DocumentLoader` reads every supported file (`.txt`, `.md`, `.json`, `.pdf`, `.csv`) from
 `data/raw/` into a typed `RawDocument`, computing a SHA-256 `doc_id` for content-addressable
 deduplication. `BronzeWriter` serializes each batch to a timestamped Parquet file
 (`data/bronze/batch_YYYYMMDD_HHMMSS.parquet`). The Bronze layer stores content **verbatim** — no
 transformations, only provenance metadata.
+
+**Incremental ingestion** is the default: `IngestStateTracker` records which `doc_id`s have
+already been ingested in a JSON state file (`data/bronze/ingestion_state.json`).  On subsequent
+runs only new or changed files are processed, making repeated runs fast and idempotent.  Pass
+`--force` (or `--force-ingest` on the orchestration runner) to reset the state and re-ingest
+everything.
 
 ### 2. Bronze → Silver (PySpark)
 
@@ -453,12 +466,21 @@ typed exceptions from `src/common/exceptions.py`; and all configuration flows th
 
 ## Roadmap
 
-A few things that are intentionally left as next steps:
+Items completed since the initial release:
 
-- A `docker-compose.yml` to wire the API, Qdrant, MLflow, and Airflow together with one command.
-- A populated `tests/` suite exercising each pipeline stage (the pytest configuration and markers are
-  already in place).
-- Incremental / streaming ingestion instead of full-batch reprocessing.
+- ✅ `docker-compose.yml` wiring Qdrant, MLflow, and the API with health-checks.
+- ✅ Populated `tests/` suite — 165 tests covering unit and integration layers for every
+  pipeline stage (ingestion, evaluation, embedding, retrieval, file utils, state tracker).
+- ✅ Incremental / streaming ingestion via `IngestStateTracker` — only new or changed
+  documents are processed on each run; full re-ingest available with `--force`.
+- ✅ `notebooks/pipeline_monitoring.ipynb` — interactive EDA across all Medallion layers
+  with data-quality visualisations and a pipeline health-check summary.
+
+Potential future enhancements:
+
+- Streaming ingestion from object storage (S3/GCS) via file-change events.
+- Spark Structured Streaming job for near-real-time Bronze → Silver processing.
+- Drift detection: automatically flag evaluation runs where metrics drop below a threshold.
 
 ---
 

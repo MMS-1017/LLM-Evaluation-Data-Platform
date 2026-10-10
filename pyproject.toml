@@ -61,6 +61,9 @@ dev = [
     "ruff>=0.4.0",
     "black>=24.4.0",
     "mypy>=1.10.0",
+    # Needed for integration tests (Bronze/Gold Parquet I/O — no Spark required)
+    "pandas>=2.0.0",
+    "pyarrow>=14.0.0",
 ]
 all = [
     "llm-eval-platform[spark,ai,api,eval,config,logging,dev]",
